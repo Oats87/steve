@@ -45,6 +45,7 @@ func ListenAndServe(ctx context.Context, url string, caCert []byte, token string
 	headers.Add("Authorization", "Bearer "+token)
 
 	for {
+		logrus.Infof("Attempting to dial steve aggregation server")
 		err := serve(ctx, dialer, url, headers, handler)
 		if err != nil {
 			logrus.Errorf("Failed to dial steve aggregation server: %v", err)
@@ -53,6 +54,7 @@ func ListenAndServe(ctx context.Context, url string, caCert []byte, token string
 		case <-ctx.Done():
 			return
 		case <-time.After(5 * time.Second):
+			logrus.Infof("Retrying dialing steve aggregation server")
 		}
 	}
 }
